@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  goodjob:
+    build: .
+    container_name: goodjob-crm
+    restart: unless-stopped
+    ports:
+      - "5188:4188"
+    environment:
+      - NODE_ENV=production
+      - CRM_STORE=mysql
+      - JWT_SECRET=${JWT_SECRET:-change_this_to_a_random_secret}
+      - PORT=4188
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:5188,http://127.0.0.1:5188,http://192.168.1.6:5188}
+      - MYSQL_HOST=${MYSQL_HOST:-mysql}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_USER=${MYSQL_USER:-goodjob}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-goodjob123}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-goodjob_crm}
+      - AI_API_KEY=${AI_API_KEY:-}
+      - AI_BASE_URL=${AI_BASE_URL:-}
+      - AI_MODEL=${AI_MODEL:-}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - goodjob-uploads:/app/uploads
+
+  mysql:
+    image: mariadb:10.11
+    container_name: goodjob-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root123}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-goodjob_crm}
+      - MYSQL_USER=${MYSQL_USER:-goodjob}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-goodjob123}
+    ports:
+      - "3307:3306"
+    volumes:
+      - goodjob-mysql-data:/var/lib/mysql
+      - ./backend/schema.mysql.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  goodjob-mysql-data:
+  goodjob-uploads:

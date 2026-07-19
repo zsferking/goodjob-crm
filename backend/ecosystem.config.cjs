@@ -1,0 +1,21 @@
+module.exports = {
+  apps: [{
+    name: 'goodjob-backend',
+    cwd: '/opt/data/workspace/GoodJob/backend',
+    script: 'dist/server.js',
+    env: {
+      NODE_ENV: 'production',
+      PORT: '4188',
+      DATABASE_URL: 'mysql://root:051212.zjH@127.0.0.1:3306/goodjob_crm',
+      JWT_SECRET: 'goodjob_crm_jwt_secret_2024_32chars_long!',
+      PROVIDER_CREDENTIAL_KEY: 'goodjob_crm_provider_credential_key_32char',
+      AGENT_JOB_ENCRYPTION_KEY: 'goodjob_crm_agent_job_encryption_key_32',
+      MARKET_OPPORTUNITY_CURSOR_SECRET: 'goodjob_crm_market_opp_cursor_32chr!',
+      TRADE_OBSERVATION_CURSOR_SECRET: 'goodjob_crm_trade_obs_cursor_32char!',
+      PROSPECT_RUN_IDEMPOTENCY_SECRET: 'goodjob_crm_prospect_idempotency_32ch',
+      PROSPECT_RUN_CURSOR_SECRET: 'goodjob_crm_prospect_run_cursor_32char',
+      CORS_ORIGINS: 'http://127.0.0.1:5188,http://localhost:5188,http://192.168.1.6:5188,http://192.168.1.6:3000,http://www.zsfer.cn:5188',
+      SESSION_COOKIE_SECURE: 'false'
+    }
+  }]
+};
